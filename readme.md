@@ -17,9 +17,10 @@ LLogos is a Firefox browser extension that empowers users to describe visual cha
 - `Settings` button opens a separate options page to manage your LLM API key.
 
 ### 🔎 Inspect Mode
-- Hover over any number of elements on a page.
-- Click one final time to confirm selection.
-- Highlighted elements are gathered for LLM prompt preparation.
+- Hover highlights the element under your cursor.
+- Ctrl+click to add elements to the selection.
+- A regular click finalizes the current selection.
+- Selected elements are gathered for LLM prompt preparation.
 
 ### 💡 DOM Snapshot & Selector Collection
 - For each selected element:
@@ -30,6 +31,7 @@ LLogos is a Firefox browser extension that empowers users to describe visual cha
 - Currently mocks an LLM response.
 - Uses all provided selectors to generate a userscript that hides those elements.
 - Injects the script live into the page.
+- Shows the generated userscript in an on-page overlay.
 
 ---
 

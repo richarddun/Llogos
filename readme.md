@@ -47,6 +47,13 @@ LLogos is a Firefox browser extension that empowers users to describe visual cha
     Click This Firefox → Load Temporary Add-on...
 
     Select the manifest.json file from the root of this project.
+## 🧪 Testing
+
+Basic tests can be executed using Node.js. They cover core functions for generating CSS selectors and userscripts.
+
+```bash
+node tests/test.js
+```
 
 📂 Folder Structure
 

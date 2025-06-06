@@ -84,14 +84,20 @@ function generateSelector(el) {
   return `${tag}${classString}`;
 }
 
-chrome.runtime.onMessage.addListener((msg) => {
-  if (msg.type === 'start-inspect') {
-    inspectMode();
-  } else if (msg.type === 'inject-userscript' && msg.script) {
-    const s = document.createElement('script');
-    s.textContent = msg.script;
-    (document.head || document.documentElement).appendChild(s);
-    s.remove();
-    showLLMResponse(msg.script);
-  }
-});
+if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onMessage) {
+  chrome.runtime.onMessage.addListener((msg) => {
+    if (msg.type === 'start-inspect') {
+      inspectMode();
+    } else if (msg.type === 'inject-userscript' && msg.script) {
+      const s = document.createElement('script');
+      s.textContent = msg.script;
+      (document.head || document.documentElement).appendChild(s);
+      s.remove();
+      showLLMResponse(msg.script);
+    }
+  });
+}
+
+if (typeof module !== 'undefined') {
+  module.exports = { generateSelector };
+}

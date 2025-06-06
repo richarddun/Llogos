@@ -4,7 +4,7 @@
   "description": "LLogos is a Firefox browser extension that empowers users to describe visual changes they'd like to make to a webpage using natural language. It leverages LLMs to convert those requests into Tampermonkey-style userscripts.",
   "main": "background.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node tests/test.js"
   },
   "repository": {
     "type": "git",
@@ -12,7 +12,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/richarddun/Llogos/issues"
   },

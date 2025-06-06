@@ -61,6 +61,23 @@ function inspectMode() {
   document.body.addEventListener('click', clickHandler, true);
 }
 
+function showLLMResponse(scriptText) {
+  const box = document.createElement('div');
+  box.className = 'llogos-response';
+
+  const close = document.createElement('button');
+  close.textContent = 'Close';
+  close.addEventListener('click', () => box.remove());
+
+  const pre = document.createElement('pre');
+  pre.textContent = scriptText;
+
+  box.appendChild(close);
+  box.appendChild(pre);
+  document.body.appendChild(box);
+
+}
+
 function generateSelector(el) {
   const tag = el.tagName.toLowerCase();
   const classString = el.className ? '.' + el.className.trim().replace(/\s+/g, '.') : '';
@@ -75,5 +92,6 @@ chrome.runtime.onMessage.addListener((msg) => {
     s.textContent = msg.script;
     (document.head || document.documentElement).appendChild(s);
     s.remove();
+    showLLMResponse(msg.script);
   }
 });

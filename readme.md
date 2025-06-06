@@ -31,6 +31,7 @@ LLogos is a Firefox browser extension that empowers users to describe visual cha
 - Currently mocks an LLM response.
 - Uses all provided selectors to generate a userscript that hides those elements.
 - Injects the script live into the page.
+- Shows the generated userscript in an on-page overlay.
 
 ---
 

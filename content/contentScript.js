@@ -41,5 +41,10 @@ function generateSelector(el) {
 chrome.runtime.onMessage.addListener((msg) => {
   if (msg.type === "start-inspect") {
     inspectMode();
+  } else if (msg.type === "inject-userscript" && msg.script) {
+    const s = document.createElement("script");
+    s.textContent = msg.script;
+    (document.head || document.documentElement).appendChild(s);
+    s.remove();
   }
 });

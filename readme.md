@@ -120,7 +120,3 @@ MIT — free to adapt, build on, and share with attribution.
     LLogos — because sometimes all you need is the right word to reshape the web.
 
 
----
-
-Would you like me to add this as a file in your working project or format it for `index.md` if you’re planning to publish a GitHub Pages site?
-

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>LLogos Settings</title>
+  <style>
+    body { font-family: sans-serif; padding: 1rem; }
+    label, input, button { display: block; margin: 0.5rem 0; width: 100%; }
+    input[type="password"] { font-family: monospace; }
+  </style>
+</head>
+<body>
+  <h2>LLogos Settings</h2>
+  <label for="apiKey">LLM API Key</label>
+  <input type="password" id="apiKey" placeholder="Enter your API key" />
+  <button id="saveKey">Save</button>
+  <button id="clearKey">Clear</button>
+  <p id="status"></p>
+
+  <script src="options.js"></script>
+</body>
+</html>

@@ -56,7 +56,7 @@ node tests/test.js
 ```
 
 📂 Folder Structure
-
+```
 llogos/
 ├── manifest.json
 ├── background.js
@@ -73,7 +73,7 @@ llogos/
 ├── icons/
 │   └── icon-48.png
 │   └── icon-96.png
-
+```
 🔐 API Key Handling
 
     Stored locally using chrome.storage.local.

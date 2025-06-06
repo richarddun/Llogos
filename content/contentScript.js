@@ -75,6 +75,7 @@ function showLLMResponse(scriptText) {
   box.appendChild(close);
   box.appendChild(pre);
   document.body.appendChild(box);
+
 }
 
 function generateSelector(el) {

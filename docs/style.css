@@ -129,3 +129,26 @@ button:hover {
 #llogos-chat-send:hover {
   background-color: #444;
 }
+
+/* Mobile tweaks */
+@media (max-width: 600px) {
+  .playground-container {
+    flex-direction: column;
+  }
+  .actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .actions button {
+    width: 100%;
+  }
+  #llogos-chat-sidebar {
+    width: 100%;
+    max-width: none;
+  }
+  .llogos-response {
+    left: 10px;
+    right: 10px;
+    max-width: none;
+  }
+}

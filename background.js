@@ -9,6 +9,19 @@ function generateUserScript(selectors) {
 })();`;
 }
 
+// Listen for keyboard shortcut to open the chat sidebar
+if (typeof chrome !== 'undefined' && chrome.commands && chrome.commands.onCommand) {
+  chrome.commands.onCommand.addListener(command => {
+    if (command === "open-chat-sidebar") {
+      chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+        if (tabs[0] && tabs[0].id) {
+          chrome.tabs.sendMessage(tabs[0].id, { type: "open-chat" });
+        }
+      });
+    }
+  });
+}
+
 if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onMessage) {
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === "elements-selected") {
@@ -19,6 +32,46 @@ if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onMessage)
       chrome.tabs.sendMessage(sender.tab.id, {
         type: "inject-userscript",
         script: userscript
+      });
+    } else if (message.type === "chat-message") {
+      chrome.storage.local.get("llmApiKey", ({ llmApiKey }) => {
+        if (!llmApiKey) {
+          chrome.tabs.sendMessage(sender.tab.id, {
+            type: "chat-response",
+            error: "API key not set. Please set your API key in settings."
+          });
+          return;
+        }
+        const systemPrompt = "You are a helpful AI assisting a user in modifying the current web page. Provide JavaScript code snippets to change the page's DOM based on the user's requests.";
+        const messages = [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: message.prompt }
+        ];
+        fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${llmApiKey}`
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            messages
+          })
+        })
+          .then(response => response.json())
+          .then(data => {
+            const resp = data.choices && data.choices[0] && data.choices[0].message.content;
+            chrome.tabs.sendMessage(sender.tab.id, {
+              type: "chat-response",
+              response: resp
+            });
+          })
+          .catch(error => {
+            chrome.tabs.sendMessage(sender.tab.id, {
+              type: "chat-response",
+              error: error.toString()
+            });
+          });
       });
     }
   });

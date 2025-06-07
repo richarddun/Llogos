@@ -2,10 +2,22 @@ body {
   font-family: sans-serif;
   width: 200px;
   padding: 1rem;
+  background-color: #1e1e1e;
+  color: #eee;
 }
 
 button {
   display: block;
   margin-top: 1rem;
   width: 100%;
+  background-color: #333;
+  color: #eee;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: #444;
 }

@@ -13,8 +13,9 @@
   top: 10px;
   right: 10px;
   z-index: 2147483647;
-  background: #fff;
-  border: 1px solid #ccc;
+  background: #2e2e2e;
+  border: 1px solid #444;
+  color: #eee;
   padding: 8px;
   font-family: monospace;
   max-width: 300px;

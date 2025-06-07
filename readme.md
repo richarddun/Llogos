@@ -14,6 +14,8 @@ LLogos is a Firefox browser extension that empowers users to describe visual cha
 
 ### 🧰 Popup UI
 - `Start Inspect Mode` button triggers a content script to enter hover/click inspection.
+- `Open Chat` button opens a chat sidebar to ask about modifications to the current page.
+- Press <kbd>Ctrl+Shift+Y</kbd> (⌘+Shift+Y on Mac) to open the chat sidebar directly.
 - `Settings` button opens a separate options page to manage your LLM API key.
 
 ### 🔎 Inspect Mode

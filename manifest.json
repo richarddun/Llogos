@@ -36,5 +36,14 @@
 "options_ui": {
   "page": "options/options.html",
   "open_in_tab": true
+},
+"commands": {
+  "open-chat-sidebar": {
+    "suggested_key": {
+      "default": "Ctrl+Shift+Y",
+      "mac": "Command+Shift+Y"
+    },
+    "description": "Open chat sidebar"
+  }
 }
 }

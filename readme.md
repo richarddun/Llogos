@@ -1,4 +1,4 @@
-# 🧠 LLogos — Natural Language Userscript Generator
+# ⚕️ LLogos — Natural Language Userscript Generator
 
 LLogos is a Firefox browser extension that empowers users to describe visual changes they'd like to make to a webpage using natural language. It leverages LLMs to convert those requests into Tampermonkey-style userscripts.
 

@@ -67,6 +67,36 @@ button:hover {
   justify-content: space-between;
 }
 
+#apiKeySection {
+  margin-top: 1rem;
+}
+
+#apiKeySection label,
+#apiKeySection input,
+#apiKeySection button {
+  display: block;
+  margin: 0.5rem 0;
+  width: 100%;
+  color: #eee;
+}
+
+#apiKeySection input,
+#apiKeySection button {
+  background-color: #333;
+  border: none;
+  color: #eee;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+#apiKeySection input[type="password"] {
+  font-family: monospace;
+}
+
+#apiKeySection button:hover {
+  background-color: #444;
+}
+
 /* Chat sidebar styles */
 #llogos-chat-sidebar {
   position: fixed;

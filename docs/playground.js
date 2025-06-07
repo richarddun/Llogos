@@ -2,6 +2,19 @@
 let selectedElements = [];
 let currentHover = null;
 
+// --- API key helpers ---
+function getApiKey() {
+  return localStorage.getItem('llmApiKey') || '';
+}
+
+function setApiKey(key) {
+  localStorage.setItem('llmApiKey', key);
+}
+
+function removeApiKey() {
+  localStorage.removeItem('llmApiKey');
+}
+
 function hoverElement(el) {
   if (currentHover && currentHover !== el) {
     currentHover.classList.remove('llogos-hover');
@@ -144,8 +157,38 @@ function openChatSidebar() {
     if (!text) return;
     addMessageToContainer('You', text);
     input.value = '';
-    // In this standalone page we simply echo the prompt as the AI response
-    setTimeout(() => addMessageToContainer('AI', `You said: ${text}`), 300);
+
+    const apiKey = getApiKey();
+    if (!apiKey) {
+      addMessageToContainer('System', 'API key not set. Please set your API key below.', true);
+      return;
+    }
+
+    const systemPrompt = 'You are a helpful AI assisting a user in modifying the current web page. Provide JavaScript code snippets to change the page\'s DOM based on the user\'s requests.';
+    const messages = [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: text }
+    ];
+
+    fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        const resp = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+        addMessageToContainer('AI', resp || '[No response]');
+      })
+      .catch(err => {
+        addMessageToContainer('AI', err.toString(), true);
+      });
   });
   input.addEventListener('keypress', e => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -161,3 +204,18 @@ function openChatSidebar() {
 document.getElementById('inspectBtn').addEventListener('click', inspectMode);
 document.getElementById('openChatBtn').addEventListener('click', openChatSidebar);
 document.getElementById('clearBtn').addEventListener('click', clearHighlights);
+
+const apiKeyInput = document.getElementById('apiKey');
+const keyStatus = document.getElementById('keyStatus');
+if (apiKeyInput) {
+  apiKeyInput.value = getApiKey();
+  document.getElementById('saveKey').addEventListener('click', () => {
+    setApiKey(apiKeyInput.value.trim());
+    if (keyStatus) keyStatus.textContent = 'Key saved!';
+  });
+  document.getElementById('clearKey').addEventListener('click', () => {
+    removeApiKey();
+    apiKeyInput.value = '';
+    if (keyStatus) keyStatus.textContent = 'Key cleared.';
+  });
+}

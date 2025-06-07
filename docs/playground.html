@@ -8,7 +8,7 @@
 </head>
 <body>
   <h1>LLogos Dev Playground</h1>
-  <p>Tap elements to highlight them. Then click "Simulate LLM Action" to see what would happen.</p>
+  <p>Select elements using <em>Start Inspect Mode</em>. Ctrl+click to select multiple items then click again to finish.</p>
 
   <div class="playground-container">
     <div class="card">Card A</div>
@@ -17,8 +17,9 @@
   </div>
 
   <div class="actions">
-    <button onclick="simulateLLMAction()">Simulate LLM Action</button>
-    <button onclick="clearSelection()">Clear</button>
+    <button id="inspectBtn">Start Inspect Mode</button>
+    <button id="openChatBtn">Open Chat</button>
+    <button id="clearBtn">Clear</button>
   </div>
 
   <script src="playground.js"></script>

@@ -1,3 +1,5 @@
+console.log('LLogos background script loaded');
+
 function generateUserScript(selectors) {
   return `// ==UserScript==
 // @name Hide Elements
@@ -12,9 +14,11 @@ function generateUserScript(selectors) {
 // Listen for keyboard shortcut to open the chat sidebar
 if (typeof chrome !== 'undefined' && chrome.commands && chrome.commands.onCommand) {
   chrome.commands.onCommand.addListener(command => {
+    console.log('Command received:', command);
     if (command === "open-chat-sidebar") {
       chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
         if (tabs[0] && tabs[0].id) {
+          console.log('Opening chat sidebar via command');
           chrome.tabs.sendMessage(tabs[0].id, { type: "open-chat" });
         }
       });
@@ -24,17 +28,20 @@ if (typeof chrome !== 'undefined' && chrome.commands && chrome.commands.onComman
 
 if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onMessage) {
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    console.log('Background received message:', message.type);
     if (message.type === "elements-selected") {
       console.log("User selected elements:", message.elements);
       const selectors = message.elements.map(el => el.selector).join(", ");
       const userscript = generateUserScript(selectors);
 
+      console.log('Sending userscript to tab');
       chrome.tabs.sendMessage(sender.tab.id, {
         type: "inject-userscript",
         script: userscript
       });
     } else if (message.type === "chat-message") {
       chrome.storage.local.get("llmApiKey", ({ llmApiKey }) => {
+        console.log('Processing chat message');
         if (!llmApiKey) {
           chrome.tabs.sendMessage(sender.tab.id, {
             type: "chat-response",
@@ -60,6 +67,7 @@ if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onMessage)
         })
           .then(response => response.json())
           .then(data => {
+            console.log('Received chat completion');
             const resp = data.choices && data.choices[0] && data.choices[0].message.content;
             chrome.tabs.sendMessage(sender.tab.id, {
               type: "chat-response",
@@ -67,6 +75,7 @@ if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onMessage)
             });
           })
           .catch(error => {
+            console.error('Chat completion failed', error);
             chrome.tabs.sendMessage(sender.tab.id, {
               type: "chat-response",
               error: error.toString()

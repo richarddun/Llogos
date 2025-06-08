@@ -1,5 +1,6 @@
 let selectedElements = [];
 let currentHover = null;
+let isLongPress = false;
 
 function hoverElement(el) {
   if (currentHover && currentHover !== el) {
@@ -32,16 +33,22 @@ function inspectMode() {
     hoverElement(e.target);
   };
 
+  let longPressTimer;
+
   const clickHandler = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.ctrlKey) {
+    if (e.ctrlKey || isLongPress) {
       selectElement(e.target);
+      isLongPress = false;
       return;
     }
 
     document.body.removeEventListener('mouseover', hoverHandler, true);
     document.body.removeEventListener('click', clickHandler, true);
+    document.body.removeEventListener('touchstart', touchStartHandler, true);
+    document.body.removeEventListener('touchend', touchEndHandler, true);
+    document.body.removeEventListener('touchmove', touchMoveHandler, true);
 
     if (!selectedElements.includes(e.target)) {
       selectedElements.push(e.target);
@@ -57,8 +64,30 @@ function inspectMode() {
     clearHighlights();
   };
 
+  const touchStartHandler = (e) => {
+    longPressTimer = setTimeout(() => {
+      isLongPress = true;
+      selectElement(e.target);
+    }, 600);
+  };
+
+  const touchEndHandler = (e) => {
+    clearTimeout(longPressTimer);
+    if (isLongPress) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
+  const touchMoveHandler = () => {
+    clearTimeout(longPressTimer);
+  };
+
   document.body.addEventListener('mouseover', hoverHandler, true);
   document.body.addEventListener('click', clickHandler, true);
+  document.body.addEventListener('touchstart', touchStartHandler, true);
+  document.body.addEventListener('touchend', touchEndHandler, true);
+  document.body.addEventListener('touchmove', touchMoveHandler, true);
 }
 
 function showLLMResponse(scriptText) {

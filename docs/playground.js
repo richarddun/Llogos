@@ -1,4 +1,5 @@
 // Single-page version of the extension logic
+console.log('LLogos playground script loaded');
 let selectedElements = [];
 let currentHover = null;
 
@@ -16,6 +17,7 @@ function removeApiKey() {
 }
 
 function hoverElement(el) {
+  console.log('Hovering element', el);
   if (currentHover && currentHover !== el) {
     currentHover.classList.remove('llogos-hover');
   }
@@ -26,6 +28,7 @@ function hoverElement(el) {
 }
 
 function selectElement(el) {
+  console.log('Selecting element', el);
   if (!selectedElements.includes(el)) {
     el.classList.remove('llogos-hover');
     el.classList.add('llogos-selected');
@@ -34,6 +37,7 @@ function selectElement(el) {
 }
 
 function clearHighlights() {
+  console.log('Clearing highlights');
   selectedElements.forEach(el => el.classList.remove('llogos-selected'));
   if (currentHover) currentHover.classList.remove('llogos-hover');
   selectedElements = [];
@@ -71,6 +75,7 @@ function showLLMResponse(scriptText) {
 }
 
 function inspectMode() {
+  console.log('Inspect mode activated');
   clearHighlights();
   const hoverHandler = e => {
     e.stopPropagation();
@@ -79,6 +84,7 @@ function inspectMode() {
   const clickHandler = e => {
     e.preventDefault();
     e.stopPropagation();
+    console.log('Click event', { ctrl: e.ctrlKey, target: e.target });
     if (e.ctrlKey) {
       selectElement(e.target);
       return;
@@ -90,7 +96,9 @@ function inspectMode() {
     }
     const selectors = selectedElements.map(el => generateSelector(el)).join(', ');
     const script = generateUserScript(selectors);
+    console.log('Injecting userscript');
     injectUserScript(script);
+    console.log('Displaying LLM response');
     showLLMResponse(script);
     clearHighlights();
   };
@@ -99,6 +107,7 @@ function inspectMode() {
 }
 
 function addMessageToContainer(sender, text, isError) {
+  console.log('Adding message to container', sender, text);
   const container = document.getElementById('llogos-chat-messages');
   if (!container) return;
   const msgDiv = document.createElement('div');
@@ -116,6 +125,7 @@ function addMessageToContainer(sender, text, isError) {
 }
 
 function openChatSidebar() {
+  console.log('Opening chat sidebar');
   if (document.getElementById('llogos-chat-sidebar')) return;
   const sidebar = document.createElement('div');
   sidebar.id = 'llogos-chat-sidebar';
@@ -153,6 +163,7 @@ function openChatSidebar() {
   sendBtn.id = 'llogos-chat-send';
   sendBtn.textContent = 'Send';
   sendBtn.addEventListener('click', () => {
+    console.log('Sending chat message', input.value.trim());
     const text = input.value.trim();
     if (!text) return;
     addMessageToContainer('You', text);
@@ -201,19 +212,31 @@ function openChatSidebar() {
   sidebar.appendChild(inputContainer);
 }
 
-document.getElementById('inspectBtn').addEventListener('click', inspectMode);
-document.getElementById('openChatBtn').addEventListener('click', openChatSidebar);
-document.getElementById('clearBtn').addEventListener('click', clearHighlights);
+document.getElementById('inspectBtn').addEventListener('click', () => {
+  console.log('Start Inspect Mode clicked');
+  inspectMode();
+});
+document.getElementById('openChatBtn').addEventListener('click', () => {
+  console.log('Open Chat clicked');
+  openChatSidebar();
+});
+document.getElementById('clearBtn').addEventListener('click', () => {
+  console.log('Clear Highlights clicked');
+  clearHighlights();
+});
 
 const apiKeyInput = document.getElementById('apiKey');
 const keyStatus = document.getElementById('keyStatus');
 if (apiKeyInput) {
   apiKeyInput.value = getApiKey();
+  console.log('Retrieved API key from storage', !!apiKeyInput.value);
   document.getElementById('saveKey').addEventListener('click', () => {
+    console.log('Save API key clicked');
     setApiKey(apiKeyInput.value.trim());
     if (keyStatus) keyStatus.textContent = 'Key saved!';
   });
   document.getElementById('clearKey').addEventListener('click', () => {
+    console.log('Clear API key clicked');
     removeApiKey();
     apiKeyInput.value = '';
     if (keyStatus) keyStatus.textContent = 'Key cleared.';

@@ -1,8 +1,11 @@
+console.log('LLogos content script loaded');
+
 let selectedElements = [];
 let currentHover = null;
 let isLongPress = false;
 
 function hoverElement(el) {
+  console.log('Hovering element', el);
   if (currentHover && currentHover !== el) {
     currentHover.classList.remove('llogos-hover');
   }
@@ -13,6 +16,7 @@ function hoverElement(el) {
 }
 
 function selectElement(el) {
+  console.log('Selecting element', el);
   if (!selectedElements.includes(el)) {
     el.classList.remove('llogos-hover');
     el.classList.add('llogos-selected');
@@ -21,6 +25,7 @@ function selectElement(el) {
 }
 
 function clearHighlights() {
+  console.log('Clearing highlights');
   selectedElements.forEach(el => el.classList.remove('llogos-selected'));
   if (currentHover) currentHover.classList.remove('llogos-hover');
   selectedElements = [];
@@ -28,6 +33,7 @@ function clearHighlights() {
 }
 
 function inspectMode() {
+  console.log('Inspect mode activated');
   const hoverHandler = (e) => {
     e.stopPropagation();
     hoverElement(e.target);
@@ -38,6 +44,7 @@ function inspectMode() {
   const clickHandler = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    console.log('Click event', { ctrl: e.ctrlKey, target: e.target });
     if (e.ctrlKey || isLongPress) {
       selectElement(e.target);
       isLongPress = false;
@@ -59,12 +66,15 @@ function inspectMode() {
       selector: generateSelector(el)
     }));
 
+    console.log('Sending selected elements', elementsData);
+
     chrome.runtime.sendMessage({ type: 'elements-selected', elements: elementsData });
 
     clearHighlights();
   };
 
   const touchStartHandler = (e) => {
+    console.log('Touch start');
     longPressTimer = setTimeout(() => {
       isLongPress = true;
       selectElement(e.target);
@@ -73,6 +83,7 @@ function inspectMode() {
 
   const touchEndHandler = (e) => {
     clearTimeout(longPressTimer);
+    console.log('Touch end');
     if (isLongPress) {
       e.preventDefault();
       e.stopPropagation();
@@ -80,6 +91,7 @@ function inspectMode() {
   };
 
   const touchMoveHandler = () => {
+    console.log('Touch move');
     clearTimeout(longPressTimer);
   };
 
@@ -91,6 +103,7 @@ function inspectMode() {
 }
 
 function showLLMResponse(scriptText) {
+  console.log('Displaying LLM response');
   const box = document.createElement('div');
   box.className = 'llogos-response';
 
@@ -108,6 +121,7 @@ function showLLMResponse(scriptText) {
 }
 
 function openChatSidebar() {
+  console.log('Opening chat sidebar');
   if (document.getElementById('llogos-chat-sidebar')) return;
   const sidebar = document.createElement('div');
   sidebar.id = 'llogos-chat-sidebar';
@@ -208,6 +222,7 @@ function openChatSidebar() {
   sendBtn.addEventListener('click', () => {
     const text = input.value.trim();
     if (!text) return;
+    console.log('Sending chat message', text);
     addMessageToContainer('You', text);
     input.value = '';
     chrome.runtime.sendMessage({ type: 'chat-message', prompt: text });
@@ -225,6 +240,7 @@ function openChatSidebar() {
 }
 
 function addMessageToContainer(sender, text, isError) {
+  console.log('Adding message to container', sender, text);
   const container = document.getElementById('llogos-chat-messages');
   if (!container) return;
   const msgDiv = document.createElement('div');
@@ -249,17 +265,21 @@ function generateSelector(el) {
 
 if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onMessage) {
   chrome.runtime.onMessage.addListener((msg) => {
+    console.log('Content script received message', msg.type);
     if (msg.type === 'start-inspect') {
       inspectMode();
     } else if (msg.type === 'inject-userscript' && msg.script) {
+      console.log('Injecting userscript');
       const s = document.createElement('script');
       s.textContent = msg.script;
       (document.head || document.documentElement).appendChild(s);
       s.remove();
       showLLMResponse(msg.script);
     } else if (msg.type === 'open-chat') {
+      console.log('Open chat message received');
       openChatSidebar();
     } else if (msg.type === 'chat-response') {
+      console.log('Chat response received');
       if (msg.error) {
         addMessageToContainer('Error', msg.error, true);
       } else {
